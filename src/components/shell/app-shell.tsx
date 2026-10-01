@@ -11,20 +11,9 @@ import { SupportDock } from "@/components/shell/support-dock";
 import { useApp, useT } from "@/lib/store";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { authed, hydrated, lang } = useApp();
+  const { authed, lang } = useApp();
   const { t } = useT();
   const [menu, setMenu] = useState(false);
-
-  if (!hydrated) {
-    return (
-      <div className="grid min-h-dvh place-items-center">
-        <div className="text-center">
-          <div className="mx-auto mb-3 size-12 animate-pulse rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500" />
-          <p className="text-sm text-muted-foreground">{t("در حال آماده‌سازی میز کار…", "Preparing the workspace…")}</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!authed) return <LoginScreen />;
 

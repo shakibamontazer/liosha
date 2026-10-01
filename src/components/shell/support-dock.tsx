@@ -92,10 +92,11 @@ export function SupportDock() {
       <button
         type="button"
         onClick={() => app.openSupport(app.ui.supportMode)}
-        className="fixed bottom-24 end-4 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-l from-indigo-600 to-fuchsia-600 px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-indigo-900/30 lg:bottom-6"
+        className="fixed bottom-24 end-4 z-40 inline-flex size-12 items-center justify-center gap-2 rounded-full bg-gradient-to-l from-indigo-600 to-fuchsia-600 text-sm font-semibold text-white shadow-xl shadow-indigo-900/30 sm:w-auto sm:px-4 lg:bottom-6"
+        aria-label={t("پشتیبانی", "Support")}
       >
         <Headset className="size-4" />
-        {t("پشتیبانی", "Support")}
+        <span className="hidden sm:inline">{t("پشتیبانی", "Support")}</span>
       </button>
       {app.ui.supportOpen ? (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/50 p-0 sm:items-end sm:justify-end sm:p-4 lg:bottom-0">
