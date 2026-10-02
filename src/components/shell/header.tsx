@@ -24,7 +24,7 @@ export function Header({ onMenu }: { onMenu: () => void }) {
           </span>
           <span className="min-w-0">
             <span className="block truncate text-sm font-extrabold sm:text-base">
-              {t("کسب‌وکارساز هوشمند", "AI Business OS")}
+              {t("لیوشا", "Liosha")}
             </span>
             <span className="hidden text-[11px] text-muted-foreground sm:block">
               {t("سیستم‌عامل ساخت کسب‌وکار", "The operating system for a new business")}

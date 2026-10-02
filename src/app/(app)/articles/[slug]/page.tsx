@@ -1,9 +1,11 @@
-"use client";
-
-import { useParams } from "next/navigation";
 import { ArticleView } from "@/components/pages/info-view";
+import { ARTICLES } from "@/lib/catalog";
 
-export default function ArticlePage() {
-  const params = useParams<{ slug: string }>();
-  return <ArticleView slug={params.slug} />;
+export function generateStaticParams() {
+  return ARTICLES.map((item) => ({ slug: item.slug }));
+}
+
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  return <ArticleView slug={slug} />;
 }

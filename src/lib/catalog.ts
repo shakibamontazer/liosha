@@ -776,7 +776,7 @@ export const ARTICLES: {
     tag: bi("محصول", "Product"),
     body: [
       bi("کسی که تازه می‌خواهد خدمتش را بفروشد، هم‌زمان باید ایده را بسنجد، نام انتخاب کند، قیمت بگذارد و محتوا بسازد. اگر هر کدام در یک ابزار جدا باشد، انرژی صرف جابه‌جایی می‌شود نه تصمیم.", "Someone launching a service has to test the idea, name it, price it, and make content at the same time. When each job lives in a different tool, energy goes to switching, not deciding."),
-      bi("کسب‌وکارساز هوشمند این مسیر را در یک داشبورد جمع می‌کند: آموزش کوتاه، ابزار همان مرحله، و منتوری که خروجی را رد یا قبول می‌کند.", "AI Business OS keeps that path in one dashboard: a short lesson, the tool for that step, and a mentor who can accept or return the work."),
+      bi("لیوشا این مسیر را در یک داشبورد جمع می‌کند: آموزش کوتاه، ابزار همان مرحله، و منتوری که خروجی را رد یا قبول می‌کند.", "Liosha keeps that path in one dashboard: a short lesson, the tool for that step, and a mentor who can accept or return the work."),
       bi("توکن فقط برای خروجی پردازشی است. تماشای درس و پر کردن چک‌لیست اعتبار کم نمی‌کند.", "Tokens pay for generated output. Watching a lesson or ticking a checklist does not spend credit."),
     ],
   },

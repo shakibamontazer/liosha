@@ -24,15 +24,15 @@ const almarai = Almarai({
 
 export const metadata: Metadata = {
   title: {
-    default: "کسب‌وکارساز هوشمند",
-    template: "%s | کسب‌وکارساز هوشمند",
+    default: "لیوشا",
+    template: "%s | لیوشا",
   },
   description:
-    "سیستم‌عامل کسب‌وکار برای ساخت گام‌به‌گام، تولید محتوا، آموزش فروش و ویترین تبلیغاتی. پروتوتایپ تعاملی.",
-  applicationName: "کسب‌وکارساز هوشمند",
+    "لیوشا، سیستم‌عامل کسب‌وکار برای ساخت گام‌به‌گام، تولید محتوا، آموزش فروش و ویترین تبلیغاتی.",
+  applicationName: "Liosha",
   appleWebApp: {
     capable: true,
-    title: "کسب‌وکارساز",
+    title: "لیوشا",
     statusBarStyle: "black-translucent",
   },
   icons: {

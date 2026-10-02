@@ -17,7 +17,7 @@ export function AboutView() {
     <div className="space-y-4">
       <PageIntro
         eyebrow={t("پلتفرم", "Platform")}
-        title={t("درباره کسب‌وکارساز هوشمند", "About AI Business OS")}
+        title={t("درباره لیوشا", "About Liosha")}
         description={t(
           "یک میز کار برای کسی که می‌خواهد کسب‌وکار آنلاین را از ایده تا اولین فروش، بدون پراکنده کردن ابزار و مشاور، جلو ببرد.",
           "A desk for someone who wants to take an online business from idea to first sale without scattering tools and consultants."

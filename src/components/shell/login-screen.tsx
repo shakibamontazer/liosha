@@ -14,7 +14,7 @@ export function LoginScreen() {
             <path d="M5 16 12 4l7 12H5Z" fill="none" stroke="currentColor" strokeWidth="1.8" />
           </svg>
         </span>
-        <h1 className="text-2xl font-extrabold">{t("کسب‌وکارساز هوشمند", "AI Business OS")}</h1>
+        <h1 className="text-2xl font-extrabold">{t("لیوشا", "Liosha")}</h1>
         <p className="mt-2 text-sm leading-7 text-muted-foreground">
           {t(
             "این ورود آزمایشی است. با بازگشت، همان پروژه، توکن و گفتگوها سر جایشان می‌مانند.",
