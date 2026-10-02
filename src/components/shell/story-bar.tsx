@@ -9,7 +9,7 @@ export function StoryBar() {
   const { lang, seenStories, openStory } = useApp();
   return (
     <div className="border-b border-border/60 bg-background/40">
-      <div className="flex gap-3 overflow-x-auto px-4 py-3 [scrollbar-width:none] lg:px-6 [&::-webkit-scrollbar]:hidden">
+      <div className="flex gap-3 overflow-x-auto px-4 py-3 [scrollbar-width:none] max-sm:grid max-sm:grid-cols-4 max-sm:gap-x-2 max-sm:overflow-visible lg:flex lg:gap-3 lg:overflow-x-auto lg:px-6 [&::-webkit-scrollbar]:hidden">
         {STORIES.map((story) => {
           const seen = seenStories.includes(story.id);
           return (
@@ -17,7 +17,7 @@ export function StoryBar() {
               key={story.id}
               type="button"
               onClick={() => openStory(story.id)}
-              className="w-24 shrink-0 text-center"
+              className="w-24 shrink-0 text-center max-sm:w-auto"
             >
               <span
                 className={cn(
@@ -30,7 +30,7 @@ export function StoryBar() {
                   {pick(story.author, lang).slice(0, 1)}
                 </span>
               </span>
-              <span className="mt-1 block text-balance text-xs font-semibold leading-4 text-foreground">
+              <span className="mt-1 block text-balance text-xs font-semibold leading-4 text-foreground max-sm:break-words">
                 {pick(story.title, lang)}
               </span>
             </button>

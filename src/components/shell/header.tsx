@@ -1,6 +1,6 @@
 "use client";
 
-import { Coins, Menu, Moon, Sun } from "lucide-react";
+import { Coins, Headset, Menu, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { useApp, useT } from "@/lib/store";
 import { formatNumber } from "@/lib/text";
 
 export function Header({ onMenu }: { onMenu: () => void }) {
-  const { tokens, daysLeft, lang, setLang, displayName } = useApp();
+  const { tokens, daysLeft, lang, setLang, displayName, openSupport } = useApp();
   const { t } = useT();
   const { setTheme } = useTheme();
 
@@ -85,16 +85,24 @@ export function Header({ onMenu }: { onMenu: () => void }) {
         </div>
       </div>
       <div className="flex items-center gap-2 px-3 pb-2 sm:hidden">
-        <div className="flex items-center rounded-full border border-border p-0.5 text-[11px] font-semibold">
+        <div className="flex shrink-0 items-center rounded-full border border-border p-0.5 text-[11px] font-semibold">
           <button type="button" onClick={() => setLang("fa")} className={`rounded-full px-2 py-1 ${lang === "fa" ? "bg-primary text-primary-foreground" : ""}`}>فا</button>
           <button type="button" onClick={() => setLang("en")} className={`rounded-full px-2 py-1 ${lang === "en" ? "bg-primary text-primary-foreground" : ""}`}>EN</button>
         </div>
-        <Link href="/me" className="truncate text-xs font-semibold">
+        <Link href="/me" className="min-w-0 flex-1 truncate text-xs font-semibold">
           {displayName}
         </Link>
-        <span className="text-[11px] text-muted-foreground">
-          {formatNumber(daysLeft, lang)} {t("روز از اشتراک مانده", "days left on the plan")}
+        <span className="shrink-0 text-[11px] text-muted-foreground">
+          {formatNumber(daysLeft, lang)} {t("روز مانده", "days left")}
         </span>
+        <button
+          type="button"
+          onClick={() => openSupport("ai")}
+          className="grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-l from-indigo-600 to-fuchsia-600 text-white"
+          aria-label={t("پشتیبانی", "Support")}
+        >
+          <Headset className="size-4" />
+        </button>
       </div>
     </header>
   );

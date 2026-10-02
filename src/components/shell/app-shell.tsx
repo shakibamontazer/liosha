@@ -38,9 +38,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <SupportDock />
       <StoryViewer />
       <Sheet open={menu} onOpenChange={setMenu}>
-        <SheetContent side={lang === "fa" ? "right" : "left"} className="w-[min(22rem,92vw)] p-0 sm:max-w-none">
+        <SheetContent side={lang === "fa" ? "right" : "left"} className="w-[min(22rem,92vw)] bg-background p-0 text-foreground sm:max-w-none">
           <SheetTitle className="sr-only">{t("منو", "Menu")}</SheetTitle>
-          <SidebarBody onNavigate={() => setMenu(false)} />
+          <SidebarBody showHome onNavigate={() => setMenu(false)} />
         </SheetContent>
       </Sheet>
     </div>

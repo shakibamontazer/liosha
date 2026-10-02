@@ -5,6 +5,7 @@ import {
   ChartColumn,
   CreditCard,
   FolderKanban,
+  House,
   Info,
   LogOut,
   Newspaper,
@@ -14,10 +15,13 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PLANS } from "@/lib/catalog";
+import { formatStoredPhone } from "@/lib/phone";
 import { progressOf } from "@/lib/progress";
 import { useApp, useT } from "@/lib/store";
 import { formatNumber, pick } from "@/lib/text";
 import { cn } from "@/lib/utils";
+
+const HOME = { href: "/", icon: House, fa: "خانه", en: "Home" };
 
 const LINKS = [
   { href: "/me", icon: UserRound, fa: "اطلاعات من", en: "My info" },
@@ -30,11 +34,12 @@ const LINKS = [
   { href: "/subscriptions", icon: CreditCard, fa: "خرید اشتراک", en: "Buy a plan" },
 ];
 
-export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
+export function SidebarBody({ onNavigate, showHome = false }: { onNavigate?: () => void; showHome?: boolean }) {
   const pathname = usePathname();
   const { displayName, intake, plan, projects, daysLeft, lang, signOut, resetDemo } = useApp();
   const { t } = useT();
   const meta = PLANS.find((item) => item.id === plan);
+  const links = showHome ? [HOME, ...LINKS] : LINKS;
 
   return (
     <div className="flex h-full flex-col">
@@ -45,7 +50,9 @@ export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           </span>
           <div className="min-w-0">
             <p className="truncate font-bold">{displayName}</p>
-            <p className="truncate text-xs text-muted-foreground">{intake?.phone || t("حساب کاربری", "Account")}</p>
+            <p dir="ltr" className="truncate text-end text-xs text-muted-foreground">
+              {intake?.phone ? formatStoredPhone(intake.phone) : t("حساب کاربری", "Account")}
+            </p>
           </div>
         </div>
         <div className="mt-3 rounded-2xl bg-indigo-500/10 px-3 py-2 text-xs leading-5">
@@ -56,7 +63,7 @@ export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-        {LINKS.map((link) => {
+        {links.map((link) => {
           const Icon = link.icon;
           const active = pathname === link.href;
           return (
