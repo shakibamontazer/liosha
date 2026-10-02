@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { LoginScreen } from "@/components/shell/login-screen";
+import { Landing } from "@/components/shell/landing";
 import { Header } from "@/components/shell/header";
 import { SidebarBody } from "@/components/shell/sidebar";
 import { BottomNav } from "@/components/shell/bottom-nav";
@@ -11,11 +11,11 @@ import { SupportDock } from "@/components/shell/support-dock";
 import { useApp, useT } from "@/lib/store";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { authed, lang } = useApp();
+  const { authed, intake, lang } = useApp();
   const { t } = useT();
   const [menu, setMenu] = useState(false);
 
-  if (!authed) return <LoginScreen />;
+  if (!intake || !authed) return <Landing />;
 
   return (
     <div className="relative min-h-dvh">

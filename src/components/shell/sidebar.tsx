@@ -30,7 +30,7 @@ const LINKS = [
 
 export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
-  const { displayName, plan, projects, daysLeft, lang, setAuthed, resetDemo } = useApp();
+  const { displayName, intake, plan, projects, daysLeft, lang, setAuthed, resetDemo } = useApp();
   const { t } = useT();
   const meta = PLANS.find((item) => item.id === plan);
 
@@ -43,7 +43,7 @@ export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           </span>
           <div className="min-w-0">
             <p className="truncate font-bold">{displayName}</p>
-            <p className="text-xs text-muted-foreground">@nika</p>
+            <p className="truncate text-xs text-muted-foreground">{intake ? intake.code : "@nika"}</p>
           </div>
         </div>
         <div className="mt-3 rounded-2xl bg-indigo-500/10 px-3 py-2 text-xs leading-5">

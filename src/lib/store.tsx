@@ -18,6 +18,7 @@ import type {
   BillingMonths,
   ChatMessage,
   Creation,
+  Intake,
   KycLevel,
   PlanId,
   Project,
@@ -39,6 +40,8 @@ type AppContextValue = AppData & {
   activeProject?: Project;
   setLang: (lang: Lang) => void;
   setAuthed: (authed: boolean) => void;
+  completeIntake: (intake: Intake) => void;
+  clearIntake: () => void;
   spendTokens: (amount: number, label: Bi) => boolean;
   setPlan: (plan: PlanId, months: BillingMonths) => void;
   setKyc: (kyc: KycLevel) => void;
@@ -77,7 +80,9 @@ function readStored() {
     const raw = localStorage.getItem(KEY);
     if (!raw) return seedData();
     const parsed = JSON.parse(raw) as { version?: number; data?: AppData };
-    if (parsed.version === 1 && parsed.data?.projects) return parsed.data;
+    if (parsed.version === 1 && parsed.data?.projects) {
+      return { ...parsed.data, intake: parsed.data.intake ?? null };
+    }
   } catch {
     localStorage.removeItem(KEY);
   }
@@ -131,6 +136,31 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const setAuthed = useCallback((authed: boolean) => {
     setData((s) => ({ ...s, authed }));
+  }, []);
+
+  const completeIntake = useCallback((intake: Intake) => {
+    const fullName = `${intake.firstName} ${intake.lastName}`.replace(/\s+/g, " ").trim();
+    setData((s) => ({
+      ...s,
+      intake,
+      authed: true,
+      name: fullName,
+      aiChat: s.aiChat.map((message) =>
+        message.id === "ai-hello"
+          ? {
+              ...message,
+              text:
+                s.lang === "en"
+                  ? `Hello ${fullName}. Tell me which step you are stuck on and I will open that step.`
+                  : `سلام ${intake.firstName}. بگو روی کدام مرحله گیر کرده‌ای تا همان را قدم‌به‌قدم باز کنم.`,
+            }
+          : message
+      ),
+    }));
+  }, []);
+
+  const clearIntake = useCallback(() => {
+    setData((s) => ({ ...s, intake: null, authed: false }));
   }, []);
 
   const spendTokens = useCallback((amount: number, label: Bi) => {
@@ -348,6 +378,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       activeProject,
       setLang,
       setAuthed,
+      completeIntake,
+      clearIntake,
       spendTokens,
       setPlan,
       setKyc,
@@ -381,6 +413,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       activeProject,
       setLang,
       setAuthed,
+      completeIntake,
+      clearIntake,
       spendTokens,
       setPlan,
       setKyc,

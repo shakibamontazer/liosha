@@ -196,7 +196,8 @@ export function seedData(): AppData {
   const cafe = cafeProject();
   return {
     lang: "fa",
-    authed: true,
+    authed: false,
+    intake: null,
     name: "نیکا رضایی",
     tokens: 3200,
     plan: "pro",

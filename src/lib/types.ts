@@ -160,9 +160,23 @@ export type Creation = {
   at: number;
 };
 
+export type IntakeAnswer = {
+  choice: "1" | "2" | "3" | "4" | "note";
+  note: string;
+};
+
+export type Intake = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  code: string;
+  answers: IntakeAnswer[];
+};
+
 export type AppData = {
   lang: "fa" | "en";
   authed: boolean;
+  intake: Intake | null;
   name: string;
   tokens: number;
   plan: PlanId;
