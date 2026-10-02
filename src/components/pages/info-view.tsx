@@ -115,7 +115,7 @@ export function WorkView() {
         description={t("پروژه‌های باز اینجاست. یکی را فعال کن و از خانه یا بیزنس‌ساز ادامه‌اش بده.", "Open projects live here. Activate one and continue from Home or the business builder.")}
       />
       <form
-        className="flex flex-wrap gap-2"
+        className="flex flex-wrap items-end gap-2"
         onSubmit={(event) => {
           event.preventDefault();
           if (!name.trim()) return;
@@ -123,8 +123,11 @@ export function WorkView() {
           setName("");
         }}
       >
-        <Input className="h-11 max-w-xs" value={name} onChange={(event) => setName(event.target.value)} placeholder={t("نام کسب‌وکار تازه", "New business name")} />
-        <Button type="submit" className="h-11">{t("ساخت پروژه", "Create project")}</Button>
+        <label className="grid min-w-0 flex-1 gap-1.5 text-sm">
+          <span className="font-medium">{t("نام پروژه", "Project name")}</span>
+          <Input className="h-11 max-w-xs" value={name} onChange={(event) => setName(event.target.value)} placeholder={t("مثلاً آتلیه نور", "For example, North studio")} />
+        </label>
+        <Button type="submit" className="h-11 self-end">{t("ساخت پروژه", "Create project")}</Button>
       </form>
       {!app.projects.length ? (
         <Glass className="p-4 text-sm">{t("هنوز پروژه‌ای نیست.", "No projects yet.")}</Glass>
@@ -170,6 +173,7 @@ export function ProgressView() {
   return (
     <div className="space-y-4">
       <PageIntro title={t("وضعیت پروژه‌ها", "Project status")} description={t("درصد هر کسب‌وکار از یازده مرحله بیزنس‌ساز حساب می‌شود.", "Each business is scored from the eleven builder steps.")} />
+      {!projects.length ? <Glass className="p-4 text-sm">{t("هنوز پروژه‌ای ثبت نشده.", "No projects yet.")}</Glass> : null}
       {projects.map((project) => (
         <Glass key={project.id} className="p-4">
           <div className="mb-3 flex items-center justify-between gap-2">

@@ -17,7 +17,7 @@ export function StoryBar() {
               key={story.id}
               type="button"
               onClick={() => openStory(story.id)}
-              className="w-[4.5rem] shrink-0 text-center"
+              className="w-24 shrink-0 text-center"
             >
               <span
                 className={cn(
@@ -30,7 +30,7 @@ export function StoryBar() {
                   {pick(story.author, lang).slice(0, 1)}
                 </span>
               </span>
-              <span className="mt-1 line-clamp-2 block text-[11px] leading-4 text-muted-foreground">
+              <span className="mt-1 block text-balance text-xs font-semibold leading-4 text-foreground">
                 {pick(story.title, lang)}
               </span>
             </button>

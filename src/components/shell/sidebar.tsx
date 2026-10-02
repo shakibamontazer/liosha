@@ -9,6 +9,7 @@ import {
   LogOut,
   Newspaper,
   Sparkles,
+  UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +20,7 @@ import { formatNumber, pick } from "@/lib/text";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
+  { href: "/me", icon: UserRound, fa: "اطلاعات من", en: "My info" },
   { href: "/about", icon: Info, fa: "درباره ما", en: "About" },
   { href: "/services", icon: Sparkles, fa: "خدمات", en: "Services" },
   { href: "/articles", icon: Newspaper, fa: "مقالات", en: "Articles" },
@@ -30,7 +32,7 @@ const LINKS = [
 
 export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
-  const { displayName, intake, plan, projects, daysLeft, lang, setAuthed, resetDemo } = useApp();
+  const { displayName, intake, plan, projects, daysLeft, lang, signOut, resetDemo } = useApp();
   const { t } = useT();
   const meta = PLANS.find((item) => item.id === plan);
 
@@ -43,11 +45,11 @@ export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           </span>
           <div className="min-w-0">
             <p className="truncate font-bold">{displayName}</p>
-            <p className="truncate text-xs text-muted-foreground">{intake ? intake.code : "@nika"}</p>
+            <p className="truncate text-xs text-muted-foreground">{intake?.phone || t("حساب کاربری", "Account")}</p>
           </div>
         </div>
         <div className="mt-3 rounded-2xl bg-indigo-500/10 px-3 py-2 text-xs leading-5">
-          <p className="font-semibold">{meta ? pick(meta.name, lang) : plan}</p>
+          <p className="font-semibold">{daysLeft > 0 && meta ? pick(meta.name, lang) : t("بدون اشتراک فعال", "No active plan")}</p>
           <p className="text-muted-foreground">
             {formatNumber(daysLeft, lang)} {t("روز مانده", "days left")}
           </p>
@@ -91,7 +93,7 @@ export function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         <button
           type="button"
           onClick={() => {
-            setAuthed(false);
+            signOut();
             onNavigate?.();
           }}
           className="flex w-full items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium hover:bg-muted"

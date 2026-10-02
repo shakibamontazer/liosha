@@ -20,6 +20,11 @@ export function formatNumber(value: number, lang: Lang) {
   return digits(new Intl.NumberFormat("en-US").format(safe), lang);
 }
 
+export function formatPlanPrice(amount: string, lang: Lang) {
+  const shown = digits(amount, lang);
+  return lang === "fa" ? `${shown} تومان` : `${shown} Toman`;
+}
+
 export function formatToman(value: number, lang: Lang) {
   const amount = formatNumber(value, lang);
   return lang === "fa" ? `${amount} تومان` : `${amount} Toman`;

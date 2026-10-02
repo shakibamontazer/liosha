@@ -9,8 +9,9 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { parsePhoneNumberFromString, type CountryCode } from "libphonenumber-js";
 import { PLANS } from "@/lib/catalog";
-import { blankProject, seedData } from "@/lib/seed";
+import { blankProject, freshAccount, seedData } from "@/lib/seed";
 import { bi, uid, type Bi, type Lang } from "@/lib/text";
 import type {
   AppData,
@@ -26,6 +27,8 @@ import type {
 } from "@/lib/types";
 
 const KEY = "abos.v1";
+const DIR_KEY = "liosha.accounts.v1";
+const STORAGE_VERSION = 2;
 
 type UiState = {
   supportOpen: boolean;
@@ -39,9 +42,14 @@ type AppContextValue = AppData & {
   displayName: string;
   activeProject?: Project;
   setLang: (lang: Lang) => void;
-  setAuthed: (authed: boolean) => void;
-  completeIntake: (intake: Intake) => void;
-  clearIntake: () => void;
+  /**
+   * Saves a new profile in this browser only. Returns false if that phone
+   * already has a local profile. This is not server authentication.
+   */
+  registerAccount: (intake: Intake) => boolean;
+  /** Loads the local profile for an E.164 number. Returns false if none exists. */
+  signIn: (phone: string) => boolean;
+  signOut: () => void;
   spendTokens: (amount: number, label: Bi) => boolean;
   setPlan: (plan: PlanId, months: BillingMonths) => void;
   setKyc: (kyc: KycLevel) => void;
@@ -74,19 +82,75 @@ const AppContext = createContext<AppContextValue | null>(null);
 const serverSnapshot = seedData();
 let current = serverSnapshot;
 
+function readDir(): Record<string, AppData> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem(DIR_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, AppData>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function migratePlan(version: number, id: string): PlanId {
+  if (version >= 2 && (id === "eco" || id === "plus" || id === "pro")) return id;
+  if (id === "base" || id === "eco") return "eco";
+  if (id === "pro" || id === "plus") return version >= 2 && id === "pro" ? "pro" : "plus";
+  if (id === "vip") return "pro";
+  return "eco";
+}
+
+function migrateStored(version: number, data: AppData): AppData {
+  let intake = data.intake ?? null;
+  if (intake) {
+    const country = intake.country || "IR";
+    let phone = intake.phone || "";
+    if (phone && !phone.startsWith("+")) {
+      const parsed = parsePhoneNumberFromString(phone, country as CountryCode);
+      if (parsed?.isValid()) phone = parsed.number;
+    }
+    intake = { ...intake, country, phone };
+  }
+  const fullName = intake ? `${intake.firstName} ${intake.lastName}`.replace(/\s+/g, " ").trim() : "";
+  const authed = Boolean(data.authed && intake && fullName && intake.phone.startsWith("+"));
+  if (!authed) return { ...seedData(), lang: data.lang === "en" ? "en" : "fa" };
+  const projects = (data.projects ?? []).filter((project) => project.id !== "atelier" && project.id !== "cafe");
+  return {
+    ...data,
+    plan: migratePlan(version, String(data.plan)),
+    intake,
+    authed: true,
+    name: fullName,
+    projects,
+    activeProjectId: projects.some((project) => project.id === data.activeProjectId) ? data.activeProjectId : "",
+    ledger: (data.ledger ?? []).filter((item) => item.id !== "l1" && item.id !== "l2"),
+  };
+}
+
 function readStored() {
   if (typeof window === "undefined") return serverSnapshot;
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return seedData();
     const parsed = JSON.parse(raw) as { version?: number; data?: AppData };
-    if (parsed.version === 1 && parsed.data?.projects) {
-      return { ...parsed.data, intake: parsed.data.intake ?? null };
+    if (parsed.data && Array.isArray(parsed.data.projects)) {
+      return migrateStored(parsed.version ?? 1, parsed.data);
     }
   } catch {
     localStorage.removeItem(KEY);
   }
   return seedData();
+}
+
+function persist(data: AppData) {
+  localStorage.setItem(KEY, JSON.stringify({ version: STORAGE_VERSION, data }));
+  if (data.authed && data.intake?.phone) {
+    const dir = readDir();
+    dir[data.intake.phone] = data;
+    localStorage.setItem(DIR_KEY, JSON.stringify(dir));
+  }
 }
 
 if (typeof window !== "undefined") current = readStored();
@@ -110,7 +174,7 @@ function setData(recipe: (data: AppData) => AppData) {
   const next = recipe(current);
   if (next === current) return;
   current = next;
-  localStorage.setItem(KEY, JSON.stringify({ version: 1, data: current }));
+  persist(current);
   listeners.forEach((listener) => listener());
 }
 
@@ -134,33 +198,28 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setData((s) => ({ ...s, lang }));
   }, []);
 
-  const setAuthed = useCallback((authed: boolean) => {
-    setData((s) => ({ ...s, authed }));
+  const registerAccount = useCallback((intake: Intake) => {
+    if (readDir()[intake.phone]) return false;
+    const lang = current.lang;
+    setData(() => freshAccount(intake, lang));
+    return true;
   }, []);
 
-  const completeIntake = useCallback((intake: Intake) => {
-    const fullName = `${intake.firstName} ${intake.lastName}`.replace(/\s+/g, " ").trim();
-    setData((s) => ({
-      ...s,
-      intake,
-      authed: true,
-      name: fullName,
-      aiChat: s.aiChat.map((message) =>
-        message.id === "ai-hello"
-          ? {
-              ...message,
-              text:
-                s.lang === "en"
-                  ? `Hello ${fullName}. Tell me which step you are stuck on and I will open that step.`
-                  : `سلام ${intake.firstName}. بگو روی کدام مرحله گیر کرده‌ای تا همان را قدم‌به‌قدم باز کنم.`,
-            }
-          : message
-      ),
-    }));
+  const signIn = useCallback((phone: string) => {
+    const saved = readDir()[phone];
+    if (!saved?.intake?.phone) return false;
+    setData(() => ({ ...saved, authed: true }));
+    return true;
   }, []);
 
-  const clearIntake = useCallback(() => {
-    setData((s) => ({ ...s, intake: null, authed: false }));
+  const signOut = useCallback(() => {
+    if (current.authed && current.intake?.phone) {
+      const dir = readDir();
+      dir[current.intake.phone] = current;
+      localStorage.setItem(DIR_KEY, JSON.stringify(dir));
+    }
+    const lang = current.lang;
+    setData(() => ({ ...seedData(), lang }));
   }, []);
 
   const spendTokens = useCallback((amount: number, label: Bi) => {
@@ -184,15 +243,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       tokens: s.tokens + meta.tokens,
       mentorCallLeft: meta.callMin,
       mentorChatLeft: meta.chatMin,
-      ledger: [
-        {
-          id: uid(),
-          label: bi(`اعتبار پلن ${meta.name.fa}`, `${meta.name.en} plan credit`),
-          amount: meta.tokens,
-          at: Date.now(),
-        },
-        ...s.ledger,
-      ].slice(0, 40),
+      ledger: meta.tokens
+        ? [
+            {
+              id: uid(),
+              label: bi(`اعتبار پلن ${meta.name.fa}`, `${meta.name.en} plan credit`),
+              amount: meta.tokens,
+              at: Date.now(),
+            },
+            ...s.ledger,
+          ].slice(0, 40)
+        : s.ledger,
     }));
   }, []);
 
@@ -362,6 +423,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const resetDemo = useCallback(() => {
     current = seedData();
     localStorage.removeItem(KEY);
+    localStorage.removeItem(DIR_KEY);
     listeners.forEach((listener) => listener());
     setUi({ supportOpen: false, supportMode: "ai", storyId: null });
   }, []);
@@ -373,13 +435,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ...data,
       hydrated,
       ui,
-      displayName:
-        data.lang === "en" && data.name === "نیکا رضایی" ? "Nika Rezaei" : data.name,
+      displayName: data.authed && data.name.trim() ? data.name.trim() : data.lang === "en" ? "Account" : "حساب کاربری",
       activeProject,
       setLang,
-      setAuthed,
-      completeIntake,
-      clearIntake,
+      registerAccount,
+      signIn,
+      signOut,
       spendTokens,
       setPlan,
       setKyc,
@@ -412,9 +473,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ui,
       activeProject,
       setLang,
-      setAuthed,
-      completeIntake,
-      clearIntake,
+      registerAccount,
+      signIn,
+      signOut,
       spendTokens,
       setPlan,
       setKyc,

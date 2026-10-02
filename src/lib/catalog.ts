@@ -131,55 +131,65 @@ export const FONT_PAIRS: { id: string; title: Bi; detail: Bi }[] = [
   { id: "almarai", title: bi("المرای + وزیرمتن", "Almarai + Vazirmatn"), detail: bi("تیتر نرم و مدرن، متن آرام.", "A soft modern title with a calm body.") },
 ];
 
+export const PLAN_SERVICES: { id: string; label: Bi }[] = [
+  { id: "edu", label: bi("آموزش", "Training") },
+  { id: "chatgpt", label: bi("ایجنت ChatGPT", "ChatGPT agent") },
+  { id: "gemini", label: bi("Gemini", "Gemini") },
+  { id: "gemini-pro", label: bi("ایجنت Gemini Pro", "Gemini Pro agent") },
+  { id: "nano", label: bi("Nano Banana", "Nano Banana") },
+  { id: "claude", label: bi("Claude", "Claude") },
+  { id: "cursor", label: bi("Cursor", "Cursor") },
+  { id: "chatgpt6", label: bi("ChatGPT 6", "ChatGPT 6") },
+  { id: "nano-pro", label: bi("Nano Banana Pro", "Nano Banana Pro") },
+];
+
 export const PLANS: {
   id: PlanId;
   name: Bi;
   tagline: Bi;
+  monthly: string;
+  includes: string[];
   tokens: number;
   callMin: number;
   chatMin: number;
   mentor: Bi;
-  ai: Bi;
   support: Bi;
-  prices: Record<1 | 3 | 12, number>;
-  popular?: boolean;
 }[] = [
   {
-    id: "base",
-    name: bi("پایه", "Base"),
-    tagline: bi("شروع", "Start"),
-    tokens: 1500,
+    id: "eco",
+    name: bi("اکو", "Eco"),
+    tagline: bi("اقتصادی", "Economy"),
+    monthly: "2.678",
+    includes: ["edu", "chatgpt", "gemini"],
+    tokens: 0,
     callMin: 60,
     chatMin: 30,
     mentor: bi("۱ ساعت تماس در هفته + ۳۰ دقیقه چت در روز", "1 hour of calls each week + 30 minutes of chat a day"),
-    ai: bi("مدل‌های پایه متن و تصویر", "Basic text and image models"),
-    support: bi("پشتیبانی هوش مصنوعی ۲۴/۷ نامحدود", "Unlimited 24/7 AI support"),
-    prices: { 1: 8985000, 3: 25955000, 12: 97820000 },
+    support: bi("گفتگوی پشتیبان داخل لیوشا", "Support chat inside Liosha"),
   },
   {
-    id: "pro",
-    name: bi("محبوب", "Pro"),
-    tagline: bi("رشد", "Growth"),
-    tokens: 4500,
+    id: "plus",
+    name: bi("پلاس", "Plus"),
+    tagline: bi("سطح میانی", "Middle tier"),
+    monthly: "4.285",
+    includes: ["edu", "gemini-pro", "nano", "claude"],
+    tokens: 0,
     callMin: 90,
     chatMin: 60,
     mentor: bi("۱.۵ ساعت تماس در هفته + ۱ ساعت چت در روز", "1.5 hours of calls each week + 1 hour of chat a day"),
-    ai: bi("مدل‌های پیشرفته تصویر و تولید ویدیو", "Advanced image and video models"),
-    support: bi("پشتیبانی هوش مصنوعی ۲۴/۷ اختصاصی", "Dedicated 24/7 AI support"),
-    prices: { 1: 14850000, 3: 41550000, 12: 153200000 },
-    popular: true,
+    support: bi("گفتگوی پشتیبان داخل لیوشا", "Support chat inside Liosha"),
   },
   {
-    id: "vip",
-    name: bi("پیشرفته", "VIP"),
-    tagline: bi("مقیاس", "Scale"),
-    tokens: 12000,
+    id: "pro",
+    name: bi("پرو", "Pro"),
+    tagline: bi("سطح بالا", "Top tier"),
+    monthly: "8.646",
+    includes: ["claude", "cursor", "gemini-pro", "chatgpt6", "nano-pro"],
+    tokens: 0,
     callMin: 180,
     chatMin: 90,
     mentor: bi("۳ ساعت تماس در هفته + ۱.۵ ساعت چت در روز", "3 hours of calls each week + 1.5 hours of chat a day"),
-    ai: bi("مدل‌های فوق‌پیشرفته و آواتارساز سینمایی", "Flagship models and cinematic avatars"),
-    support: bi("پشتیبانی ۲۴/۷ ویژه و فوق‌سریع", "Priority, faster 24/7 support"),
-    prices: { 1: 24900000, 3: 68700000, 12: 248800000 },
+    support: bi("گفتگوی پشتیبان داخل لیوشا", "Support chat inside Liosha"),
   },
 ];
 
@@ -252,7 +262,7 @@ export const STORIES: StoryItem[] = [
     id: "s1",
     kind: "official",
     author: bi("آموزش رسمی", "Official lesson"),
-    title: bi("ایده خام را همین‌جا خالی کن", "Dump the raw idea here"),
+    title: bi("ایده خام", "Raw idea"),
     body: bi(
       "در مرحله صفر فقط بنویس چه چیزی در ذهن داری. از هوش مصنوعی بخواه نقطه‌های کور را بگوید. خروجی باید یک هدف ۳۰ روزه باشد، نه یک شعار.",
       "In step zero, write what is actually in your head. Ask the model for blind spots. The output is a 30-day goal, not a slogan."
@@ -263,7 +273,7 @@ export const STORIES: StoryItem[] = [
     id: "s2",
     kind: "official",
     author: bi("آموزش رسمی", "Official lesson"),
-    title: bi("قانون ۵۰ / ۳۰ / ۲۰", "The 50 / 30 / 20 rule"),
+    title: bi("قانون ۵۰/۳۰/۲۰", "50 / 30 / 20"),
     body: bi(
       "نصف بودجه در دسترس برای عملیات، سی درصد برای دستمزد خودت و بیست درصد برای توسعه. اگر دستمزد خودت صفر بماند، کسب‌وکار زودتر از پول تمام می‌شود.",
       "Half the available budget goes to operations, thirty percent to your own pay, twenty percent to growth. If your pay stays at zero, the business ends before the money does."
@@ -274,7 +284,7 @@ export const STORIES: StoryItem[] = [
     id: "s3",
     kind: "official",
     author: bi("آموزش رسمی", "Official lesson"),
-    title: bi("نام، حداکثر سه سیلاب", "Three syllables, maximum"),
+    title: bi("نام کوتاه", "A short name"),
     body: bi(
       "قبل از عاشق شدن به یک نام، دامنه ir و com و هندل اینستاگرام را چک کن. نامی که شنیده می‌شود ولی تایپ نمی‌شود، پیدا نمی‌شود.",
       "Before you fall for a name, check the .ir and .com domains and the Instagram handle. A name people hear but cannot type will not be found."
@@ -285,7 +295,7 @@ export const STORIES: StoryItem[] = [
     id: "s4",
     kind: "win",
     author: bi("هستی مرادی", "Hasti Moradi"),
-    title: bi("پیج در ۹ روز لانچ شد", "Page launched in 9 days"),
+    title: bi("لانچ در ۹ روز", "Launched in 9 days"),
     body: bi(
       "چک‌لیست لانچ را تمام کردم: ۶ نمونه‌کار، ۹ ریلز و یک مسیر پرداخت. اولین پیام دایرکت همان شب آمد.",
       "I finished the launch checklist: 6 portfolio pieces, 9 reels, and a payment path. The first direct message arrived that night."
@@ -296,7 +306,7 @@ export const STORIES: StoryItem[] = [
     id: "s5",
     kind: "win",
     author: bi("آرمین توکلی", "Armin Tavakoli"),
-    title: bi("۱۲۰ لید از کانال تلگرام", "120 leads from Telegram"),
+    title: bi("۱۲۰ لید", "120 leads"),
     body: bi(
       "به‌جای پست پراکنده، چهار ستون محتوا چیدم و پین مسیج را به یک پیشنهاد مشخص وصل کردم.",
       "Instead of scattered posts, I set four content pillars and tied the pinned message to one clear offer."
@@ -306,8 +316,8 @@ export const STORIES: StoryItem[] = [
   {
     id: "s6",
     kind: "win",
-    author: bi("نیکا رضایی", "Nika Rezaei"),
-    title: bi("اولین فروش پکیج برندینگ", "First branding package sold"),
+    author: bi("سارا نعمتی", "Sara Nemati"),
+    title: bi("اولین فروش", "First sale"),
     body: bi(
       "پکیج محبوب را روی خروجی بستم، نه روی ساعت. مشتری برای مجموعه پرتره اعتمادساز پول داد.",
       "I priced the popular package on the outcome, not the hours. The client paid for a trust-building portrait set."
@@ -318,7 +328,7 @@ export const STORIES: StoryItem[] = [
     id: "s7",
     kind: "win",
     author: bi("کیان صالحی", "Kian Salehi"),
-    title: bi("سه تست بتا، یک نیچ", "Three betas, one niche"),
+    title: bi("سه تست بتا", "Three betas"),
     body: bi(
       "به سه کافه فقط تقویم محتوای یک‌هفته‌ای دادم. دو نفر ماندند و مسیر خدماتم مشخص شد.",
       "I gave three cafés a one-week content calendar. Two stayed, and the service finally had a shape."

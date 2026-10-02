@@ -1,6 +1,6 @@
 import type { Bi } from "@/lib/text";
 
-export type PlanId = "base" | "pro" | "vip";
+export type PlanId = "eco" | "plus" | "pro";
 export type BillingMonths = 1 | 3 | 12;
 export type KycLevel = "none" | "basic" | "verified";
 export type BannerSize = "special" | "large" | "medium" | "small";
@@ -168,6 +168,9 @@ export type IntakeAnswer = {
 export type Intake = {
   firstName: string;
   lastName: string;
+  /** ISO 3166-1 alpha-2, for example IR. */
+  country: string;
+  /** E.164, for example +989121234567. */
   phone: string;
   code: string;
   answers: IntakeAnswer[];

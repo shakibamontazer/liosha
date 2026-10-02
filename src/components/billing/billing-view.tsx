@@ -1,22 +1,20 @@
 "use client";
 
+import { Check, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Glass, PageIntro } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PLANS, TOKEN_RATES } from "@/lib/catalog";
+import { PLAN_SERVICES, PLANS, TOKEN_RATES } from "@/lib/catalog";
 import { useApp, useT } from "@/lib/store";
-import { formatNumber, formatToman, pick, timeAgo } from "@/lib/text";
-import type { BillingMonths, PlanId } from "@/lib/types";
+import { formatNumber, formatPlanPrice, pick, timeAgo } from "@/lib/text";
+import type { PlanId } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-const MONTHS: BillingMonths[] = [1, 3, 12];
 
 export function PlansView() {
   const app = useApp();
   const { t } = useT();
-  const [months, setMonths] = useState<BillingMonths>(1);
   const [picked, setPicked] = useState<PlanId | null>(null);
   const plan = PLANS.find((item) => item.id === picked);
 
@@ -26,33 +24,34 @@ export function PlansView() {
         eyebrow={t("مدل استارباکسی", "Three-level plans")}
         title={t("خرید اشتراک", "Buy a plan")}
         description={t(
-          "پایه، محبوب و پیشرفته. فعال‌سازی اینجا آزمایشی است و توکن پلن را به موجودی اضافه می‌کند.",
-          "Base, Pro, and VIP. Activation here is a prototype and adds that plan’s tokens to the balance."
+          "سه پلن یک‌ماهه. قیمت با همان واحد تومان بقیهٔ لیوشا نشان داده می‌شود. فعال‌سازی اینجا هنوز به درگاه وصل نیست.",
+          "Three monthly plans. The price uses the same toman unit as the rest of Liosha. Activation here is not connected to a payment gateway."
         )}
       />
-      <div className="flex gap-2">
-        {MONTHS.map((item) => (
-          <button key={item} type="button" onClick={() => setMonths(item)} className={cn("rounded-full px-3 py-1.5 text-xs font-semibold", months === item ? "bg-primary text-primary-foreground" : "bg-muted")}>
-            {item === 1 ? t("۱ ماهه", "1 month") : item === 3 ? t("۳ ماهه", "3 months") : t("۱ ساله", "1 year")}
-          </button>
-        ))}
-      </div>
       <div className="grid gap-3 lg:grid-cols-3">
         {PLANS.map((item) => (
-          <Glass key={item.id} className={cn("flex flex-col p-4", item.popular && "ring-2 ring-indigo-400")}>
-            {item.popular ? <span className="mb-2 w-fit rounded-full bg-indigo-500/15 px-2 py-0.5 text-[11px] font-semibold">{t("محبوب", "Popular")}</span> : null}
-            {app.plan === item.id ? <span className="mb-2 w-fit rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px]">{t("پلن فعلی", "Current plan")}</span> : null}
+          <Glass key={item.id} className="flex flex-col p-4">
+            {app.plan === item.id && app.daysLeft > 0 ? <span className="mb-2 w-fit rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px]">{t("پلن فعلی", "Current plan")}</span> : null}
             <h2 className="text-xl font-extrabold">{pick(item.name, app.lang)}</h2>
             <p className="text-xs text-muted-foreground">{pick(item.tagline, app.lang)}</p>
-            <p className="mt-3 text-lg font-bold">{formatToman(item.prices[months], app.lang)}</p>
-            <ul className="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
-              <li>{pick(item.ai, app.lang)}</li>
-              <li>{formatNumber(item.tokens, app.lang)} {t("توکن در ماه", "tokens / month")}</li>
-              <li>{pick(item.mentor, app.lang)}</li>
-              <li>{pick(item.support, app.lang)}</li>
+            <p className="mt-3 text-xs font-semibold text-indigo-700 dark:text-indigo-200">{t("قیمت یک ماه", "One-month price")}</p>
+            <p className="num text-2xl font-extrabold">{formatPlanPrice(item.monthly, app.lang)}</p>
+            <ul className="mt-3 space-y-2 text-sm leading-6">
+              {PLAN_SERVICES.map((service) => {
+                const included = item.includes.includes(service.id);
+                return (
+                  <li key={service.id} className={cn("flex items-start gap-2", included ? "text-foreground" : "text-muted-foreground/70")}>
+                    {included ? <Check className="mt-1 size-4 text-emerald-600" aria-hidden /> : <X className="mt-1 size-4" aria-hidden />}
+                    <span>
+                      {pick(service.label, app.lang)}
+                      <span className="sr-only">{included ? t("، شامل این پلن", ", included") : t("، شامل این پلن نیست", ", not included")}</span>
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
             <Button type="button" className="mt-4 h-10" onClick={() => setPicked(item.id)}>
-              {app.plan === item.id ? t("تمدید آزمایشی", "Renew in the prototype") : t("انتخاب", "Choose")}
+              {app.plan === item.id && app.daysLeft > 0 ? t("تمدید آزمایشی", "Renew in the prototype") : t("انتخاب", "Choose")}
             </Button>
           </Glass>
         ))}
@@ -78,7 +77,7 @@ export function PlansView() {
           <DialogHeader>
             <DialogTitle>{plan ? pick(plan.name, app.lang) : ""}</DialogTitle>
             <DialogDescription>
-              {plan ? formatToman(plan.prices[months], app.lang) : ""} · {formatNumber(plan?.tokens ?? 0, app.lang)} {t("توکن", "tokens")}
+              {plan ? `${t("قیمت یک ماه", "One-month price")}: ${formatPlanPrice(plan.monthly, app.lang)}` : ""}
             </DialogDescription>
           </DialogHeader>
           <Button
@@ -86,9 +85,9 @@ export function PlansView() {
             className="h-11"
             onClick={() => {
               if (!plan) return;
-              app.setPlan(plan.id, months);
+              app.setPlan(plan.id, 1);
               setPicked(null);
-              toast.success(t("پلن آزمایشی فعال شد و توکن اضافه شد.", "Prototype plan activated and tokens were added."));
+              toast.success(t("پلن به‌صورت آزمایشی برای یک ماه فعال شد. پرداخت واقعی انجام نشده.", "The plan was activated for one month in this prototype. No real payment was taken."));
             }}
           >
             {t("فعال‌سازی آزمایشی", "Activate in the prototype")}
@@ -108,17 +107,17 @@ export function AccountView() {
       <PageIntro
         eyebrow={t("وضعیت حساب", "Account")}
         title={t("اشتراک من", "My subscription")}
-        description={pick(plan.mentor, app.lang)}
+        description={t("روزهای استفاده‌نشده ذخیره نمی‌شود. پرداخت واقعی به این صفحه وصل نیست.", "Unused days are not banked. Real payment is not connected to this page.")}
       />
       <div className="grid gap-3 sm:grid-cols-3">
         <Glass className="p-4">
           <p className="text-xs text-muted-foreground">{t("پلن", "Plan")}</p>
-          <p className="text-2xl font-extrabold">{pick(plan.name, app.lang)}</p>
+          <p className="text-2xl font-extrabold">{app.daysLeft > 0 ? pick(plan.name, app.lang) : t("بدون اشتراک فعال", "No active plan")}</p>
         </Glass>
         <Glass className="p-4">
           <p className="text-xs text-muted-foreground">{t("روز مانده", "Days left")}</p>
           <p className="text-2xl font-extrabold num">{formatNumber(app.daysLeft, app.lang)}</p>
-          <p className="text-xs text-muted-foreground">{t("روز استفاده‌نشده ذخیره نمی‌شود.", "Unused days are not banked.")}</p>
+          <p className="text-xs text-muted-foreground">{app.daysLeft > 0 ? t("یک ماهه", "One month") : t("هنوز پلنی فعال نشده.", "No plan is active yet.")}</p>
         </Glass>
         <Glass className="p-4">
           <p className="text-xs text-muted-foreground">{t("توکن", "Tokens")}</p>

@@ -8,7 +8,7 @@ import { useApp, useT } from "@/lib/store";
 import { formatNumber } from "@/lib/text";
 
 export function Header({ onMenu }: { onMenu: () => void }) {
-  const { tokens, daysLeft, lang, setLang } = useApp();
+  const { tokens, daysLeft, lang, setLang, displayName } = useApp();
   const { t } = useT();
   const { setTheme } = useTheme();
 
@@ -63,6 +63,12 @@ export function Header({ onMenu }: { onMenu: () => void }) {
             <Moon className="dark:hidden" />
           </Button>
           <Link
+            href="/me"
+            className="hidden h-9 max-w-40 items-center truncate rounded-full border border-border px-2.5 text-xs font-semibold sm:inline-flex"
+          >
+            {displayName}
+          </Link>
+          <Link
             href="/account"
             className="inline-flex h-9 items-center gap-1 rounded-full border border-indigo-400/30 bg-indigo-500/10 px-2.5 text-xs font-semibold text-indigo-800 dark:text-indigo-100"
           >
@@ -83,6 +89,9 @@ export function Header({ onMenu }: { onMenu: () => void }) {
           <button type="button" onClick={() => setLang("fa")} className={`rounded-full px-2 py-1 ${lang === "fa" ? "bg-primary text-primary-foreground" : ""}`}>فا</button>
           <button type="button" onClick={() => setLang("en")} className={`rounded-full px-2 py-1 ${lang === "en" ? "bg-primary text-primary-foreground" : ""}`}>EN</button>
         </div>
+        <Link href="/me" className="truncate text-xs font-semibold">
+          {displayName}
+        </Link>
         <span className="text-[11px] text-muted-foreground">
           {formatNumber(daysLeft, lang)} {t("روز از اشتراک مانده", "days left on the plan")}
         </span>
