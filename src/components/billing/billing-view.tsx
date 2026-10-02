@@ -106,7 +106,7 @@ export function AccountView() {
     <div className="space-y-4">
       <PageIntro
         eyebrow={t("وضعیت حساب", "Account")}
-        title={t("اشتراک من", "My subscription")}
+        title={t("کیف پول", "Wallet")}
         description={t("روزهای استفاده‌نشده ذخیره نمی‌شود. پرداخت واقعی به این صفحه وصل نیست.", "Unused days are not banked. Real payment is not connected to this page.")}
       />
       <div className="grid gap-3 sm:grid-cols-3">

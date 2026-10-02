@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, House, MessagesSquare, Store } from "lucide-react";
+import { CreditCard, FolderKanban, House, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useT } from "@/lib/store";
@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/", icon: House, fa: "خانه", en: "Home" },
-  { href: "/subscriptions", icon: CreditCard, fa: "اشتراک‌ها", en: "Plans" },
-  { href: "/qa", icon: MessagesSquare, fa: "پرس‌وجو", en: "Q&A" },
-  { href: "/marketplace", icon: Store, fa: "بیزنس من", en: "My Business" },
+  { href: "/account", icon: Wallet, fa: "کیف پول", en: "Wallet" },
+  { href: "/subscriptions", icon: CreditCard, fa: "خرید اشتراک", en: "Buy a plan" },
+  { href: "/work", icon: FolderKanban, fa: "کار من", en: "My work" },
 ];
 
 export function BottomNav() {
@@ -27,7 +27,7 @@ export function BottomNav() {
               <Link
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center gap-1 py-2 text-[11px] font-medium",
+                  "flex flex-col items-center gap-1 px-0.5 py-2 text-center text-[10px] font-medium leading-tight sm:text-[11px]",
                   active ? "text-indigo-600 dark:text-indigo-300" : "text-muted-foreground"
                 )}
               >

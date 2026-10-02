@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BadgeCheck,
   ChartColumn,
   CreditCard,
   FolderKanban,
@@ -11,6 +10,7 @@ import {
   Newspaper,
   Sparkles,
   UserRound,
+  Wallet,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,7 +30,7 @@ const LINKS = [
   { href: "/articles", icon: Newspaper, fa: "مقالات", en: "Articles" },
   { href: "/work", icon: FolderKanban, fa: "کار من", en: "My work" },
   { href: "/progress", icon: ChartColumn, fa: "وضعیت پروژه‌ها", en: "Project status" },
-  { href: "/account", icon: BadgeCheck, fa: "اشتراک من", en: "My subscription" },
+  { href: "/account", icon: Wallet, fa: "کیف پول", en: "Wallet" },
   { href: "/subscriptions", icon: CreditCard, fa: "خرید اشتراک", en: "Buy a plan" },
 ];
 

@@ -1,23 +1,35 @@
 "use client";
 
+import { BadgeDollarSign, FlaskConical, Lightbulb, PieChart, Rocket, Type, Users, type LucideIcon } from "lucide-react";
 import { STORIES } from "@/lib/catalog";
 import { useApp } from "@/lib/store";
 import { pick } from "@/lib/text";
 import { cn } from "@/lib/utils";
 
+const STORY_ICONS: Record<string, LucideIcon> = {
+  s1: Lightbulb,
+  s2: PieChart,
+  s3: Type,
+  s4: Rocket,
+  s5: Users,
+  s6: BadgeDollarSign,
+  s7: FlaskConical,
+};
+
 export function StoryBar() {
   const { lang, seenStories, openStory } = useApp();
   return (
     <div className="border-b border-border/60 bg-background/40">
-      <div className="flex gap-3 overflow-x-auto px-4 py-3 [scrollbar-width:none] max-sm:grid max-sm:grid-cols-4 max-sm:gap-x-2 max-sm:overflow-visible lg:flex lg:gap-3 lg:overflow-x-auto lg:px-6 [&::-webkit-scrollbar]:hidden">
+      <div className="flex gap-3 overflow-x-auto px-4 py-3 [scrollbar-width:none] lg:px-6 [&::-webkit-scrollbar]:hidden">
         {STORIES.map((story) => {
           const seen = seenStories.includes(story.id);
+          const Icon = STORY_ICONS[story.id] ?? Lightbulb;
           return (
             <button
               key={story.id}
               type="button"
               onClick={() => openStory(story.id)}
-              className="w-24 shrink-0 text-center max-sm:w-auto"
+              className="w-24 shrink-0 text-center"
             >
               <span
                 className={cn(
@@ -26,11 +38,11 @@ export function StoryBar() {
                   seen && "opacity-55"
                 )}
               >
-                <span className="grid size-full place-items-center rounded-full bg-background text-xs font-bold">
-                  {pick(story.author, lang).slice(0, 1)}
+                <span className="grid size-full place-items-center rounded-full bg-background text-foreground">
+                  <Icon className="size-5" aria-hidden />
                 </span>
               </span>
-              <span className="mt-1 block text-balance text-xs font-semibold leading-4 text-foreground max-sm:break-words">
+              <span className="mt-1 block text-balance text-xs font-semibold leading-4 text-foreground">
                 {pick(story.title, lang)}
               </span>
             </button>
@@ -48,6 +60,7 @@ export function StoryViewer() {
 
   if (!story) return null;
 
+  const Icon = STORY_ICONS[story.id] ?? Lightbulb;
   const go = (next: number) => {
     seeStory(story.id);
     const item = STORIES[next];
@@ -79,7 +92,10 @@ export function StoryViewer() {
                   ? "نتیجه کاربران"
                   : "User result"}
             </p>
-            <p className="font-semibold">{pick(story.author, lang)}</p>
+            <p className="flex items-center gap-2 font-semibold">
+              <Icon className="size-4" aria-hidden />
+              {pick(story.author, lang)}
+            </p>
           </div>
           <button
             type="button"
