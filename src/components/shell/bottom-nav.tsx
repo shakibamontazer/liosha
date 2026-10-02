@@ -17,7 +17,7 @@ export function BottomNav() {
   const pathname = usePathname();
   const { t } = useT();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-background/90 px-2 pb-[max(0.4rem,env(safe-area-inset-bottom))] backdrop-blur-xl lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/80 bg-background/90 px-2 pb-[max(0.4rem,env(safe-area-inset-bottom))] backdrop-blur-xl lg:start-72">
       <ul className="mx-auto grid max-w-lg grid-cols-4">
         {ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);

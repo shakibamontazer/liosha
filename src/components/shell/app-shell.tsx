@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="lg:ps-72">
         <Header onMenu={() => setMenu(true)} />
         <StoryBar />
-        <main id="main" className="mx-auto w-full max-w-6xl px-4 py-5 pb-28 lg:px-6 lg:pb-16">
+        <main id="main" className="mx-auto w-full max-w-6xl px-4 py-5 pb-28 lg:px-6 lg:pb-24">
           {children}
         </main>
       </div>
