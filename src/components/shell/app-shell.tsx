@@ -5,7 +5,6 @@ import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Landing } from "@/components/shell/landing";
 import { Header } from "@/components/shell/header";
 import { SidebarBody } from "@/components/shell/sidebar";
-import { BottomNav } from "@/components/shell/bottom-nav";
 import { StoryBar, StoryViewer } from "@/components/shell/story-bar";
 import { SupportDock } from "@/components/shell/support-dock";
 import { useApp, useT } from "@/lib/store";
@@ -30,11 +29,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="lg:ps-72">
         <Header onMenu={() => setMenu(true)} />
         <StoryBar />
-        <main id="main" className="mx-auto w-full max-w-6xl px-4 py-5 pb-28 lg:px-6 lg:pb-24">
+        <main id="main" className="mx-auto w-full max-w-6xl px-4 py-5 pb-10 lg:px-6 lg:pb-16">
           {children}
         </main>
       </div>
-      <BottomNav />
       <SupportDock />
       <StoryViewer />
       <Sheet open={menu} onOpenChange={setMenu}>
